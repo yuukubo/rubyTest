@@ -6,11 +6,13 @@ push test
 
 ***************************************
 
+v014 GBM and GB added. exe by ocra
+
 v013 push shift key to slow down
 
 v012 make ending. tune enemy appear. tune enemy shots. tune difficulty. bug fix : init after gameover
 
-2015 GW dev goes on
+ ** 2015 GW dev goes on **
 
 ***************************************
 
@@ -36,4 +38,4 @@ v002 make classes
 
 v001 main.rb only
 
-20150518 study git over. push test start
+ ** 20150518 study git over. push test start **

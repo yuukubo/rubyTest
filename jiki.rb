@@ -31,18 +31,18 @@ class Player < Sprite # スプライトクラス継承
   def update # 1/60秒毎の処理
     w, h = self.image.width, self.image.height # 画像の大きさ取得。多重代入
     # shift判定
-    if Input.keyPush?(K_LSHIFT)
-      self.spd = self.lowspd
+    if Input.keyPush?(K_LSHIFT) # shift押してたら
+      self.spd = self.lowspd # speed down
     else # shift押してなかったら
-      self.spd = self.highspd
+      self.spd = self.highspd # speed up
     end # shift判定end
     
     # マウスカーソル座標を自機座標にする
     # →キーボード操作に変更
     # self.bx = Input.mousePosX # 自機座標はマウスカーソルとする
     # self.by = Input.mousePosY # 自機座標はマウスカーソルとする
-    self.bx += Input.x.to_f * self.spd.to_f # 自機座標はキー操作とする
-    self.by += Input.y.to_f * self.spd.to_f # 自機座標はキー操作とする
+    self.bx += Input.x.to_f * self.spd.to_f # 自機座標はキー操作とする。5/7で速度部分を変数化。
+    self.by += Input.y.to_f * self.spd.to_f # 自機座標はキー操作とする。5/7で速度部分を変数化。
  
     xmin, ymin = 0, 0 # 画面左上
     xmax, ymax = Window.width, Window.height # 画面右下
@@ -62,19 +62,19 @@ class Player < Sprite # スプライトクラス継承
     #end # 自動発射完了
  
     # Zキー判定
-    if Input.key_push?(K_Z)
-      spr = Shot.new(self.bx, self.by, 16, 270)
-      $shots.push(spr)
-    end
+    if Input.key_push?(K_Z) # Zで発射
+      spr = Shot.new(self.bx, self.by, 16, 270) # 自機弾objに、現在の時期座標、弾速度、角度を入れて生成。
+      $shots.push(spr) # 自機弾配列に生成した弾objを配列の最後に追加
+    end # 自発装填、完了
 
     self.shottimer += 1 # 一周毎に発射間隔変数をカウントアップ
     # self.angle += 8 #  # 一周毎に自機の角度をカウントアップ。割と早め。1/60秒で8ということで、、
-    # v005：回転廃止
+    # GW_v005：回転廃止
  
     if self.hit_timer > 0 # 撃たれた判定。変数が正ならこちらへ
       self.hit_timer -= 1 # カウントダウン
       self.hit_timer = 0 if self.hit_timer <= 0 # カウンタが０まで来たら、０を設定
-    else # 
+    else # カウントダウン済んでたら
       self.hit_timer = 0 # ０か負だったら、０を設定。一応負にはならないはずだけどね
     end # 撃たれた判定end
  
@@ -82,7 +82,7 @@ class Player < Sprite # スプライトクラス継承
     # DXRuby開発版なら、self.offset_sync = true で済んでしまうのだけど、
     # 開発版は Ruby 1.8 や 1.9 に対応してないので…
     self.x = self.bx - w / 2 # どうやらオフセット値対応らしい。
-    self.y = self.by - h / 2 # 表示位置が気に食わないという、匠の細やかな気配りということですね
+    self.y = self.by - h / 2 # 表示位置、匠の細やかな気配りということですね
   end # 周回更新処理end
  
   # 雑魚敵と当たった時に呼ばれる処理。または被弾時の処理。
@@ -90,11 +90,11 @@ class Player < Sprite # スプライトクラス継承
     self.hit_timer = 4 # ここでは特に実処理はせず、ただタイマーを設定するだけ。
     $hitcount += 1 # 被弾カウンタをカウントアップ
     $lifecount -= 1 # ライフカウンタをカウントダウン
-    if $lifecount == 0
-      $state = "gameover"
+    if $lifecount == 0 # 自機ライフがなくなったら
+      $state = "gameover" # ゲームオーバーシーンへ。
       $debugflg = false # spd表示したままvanish, cleanしちゃうと、表示したいものがnilになりゲームが落ちる為
-      self.vanish
-    end
+      self.vanish # 自機の初期化の為。clean対象化。
+    end # 自機ライフ確認end
   end # 被弾処理end。ここでのタイマー設定で、次の週で被弾カウンタが正なのでカウントダウンへ回る。
  
   def draw # 描画処理

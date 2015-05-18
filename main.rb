@@ -9,16 +9,20 @@ require './enemybullet.rb' # 敵弾クラス読み込み
 font = Font.new(12) # スプライト数の表示用フォント
 fontback = Image.new(192, 32, [100,100,100]) # 背景用
 
+bg = Image.load("img1.jpg") # 背景イメージ読み込み
+
+bgm1 = Sound.new("stg1.mid")# BGM読み込み
+
 # 度→ラジアン変換
 def deg2rad(deg) # degって何かと思ったらdegrees。弧度法 度数法。ラジアン = 度 × 円周率 ÷ 180 
   return deg * Math::PI / 180.0 # まさにそのまま式にしているだけ。どうやらPythonにはMath.Radiansとかあるらしいが、Rubyにはないらしいのです。
 end # 変換メソッド自作完了
 
 # zキーのオートリピート設定
-Input.setKeyRepeat( K_Z, 10, 2 )
+Input.setKeyRepeat( K_Z, 10, 2 ) # 自機弾発射用
 
 # shiftキーのオートリピート設定
-Input.setKeyRepeat( K_LSHIFT, 1, 1 )
+Input.setKeyRepeat( K_LSHIFT, 1, 1 ) # 自機速度調整用
 
 # ----------------------------------------
 
@@ -42,21 +46,28 @@ def gameInit
   # 引数は確かスピード？そうそう、スピードのようです。→速度落としました。
 end
 
-gameInit
+gameInit # ゲームシーン切り替え毎に必要な初期化をまとめたものについて実行
 
 in_pause = false # ポーズ中か判定、初期値はポーズなし。
 
-$state = "gamestart"
- 
+$state = "gamestart" # 先ずゲームスタートシーンへご案内。
+
+#def bgmmgr
+#  bgm1.start = 5000 # BGM開始
+#  bgm1.setVolume 255
+  bgm1.play
+#end
+
  #####################################################################
  
 Window.loop do # 1/60のメインループ開始。
   case $state
-  when "game" # 初期化
-  
+  when "game" # ゲーム中だったらこちら
   
   break if Input.keyPush?(K_ESCAPE) # esc終了判定
- 
+  
+  Window.draw(0, 0, bg, -1)
+  
   update_enable = false # 更新オンオフ。ループ始めにフラグを立てる
   if in_pause # オブジェクトがブール値だとこういう書き方も可能なのか。真の場合ということ
     # ポーズ中。前回のループでポーズを押した場合はこちらへ。
@@ -109,7 +120,8 @@ Window.loop do # 1/60のメインループ開始。
   Window.drawFont(0, 64, "enemy: " + $enemylife.to_s, font) # 敵ライフカウンタ
   Window.drawFont(0, 80, "Sprs: " + l.to_s, font) # 画面左上端に配列要素数表示
   
-  # debug
+  # debug # 仮実装。今後一層ほしくなる気がする機能。
+
   # d判定
   if $debugflg # 
     # 前回のループでdを押した場合はこちらへ。
@@ -117,36 +129,35 @@ Window.loop do # 1/60のメインループ開始。
 
     # dキーを押したらdebug解除
     $debugflg = false if Input.keyPush?(K_D) # フラグを折る。
-  else
-    $debugflg = true if Input.keyPush?(K_D)
-  end
+  else # このループではdebugモードじゃなかったらこちら
+    $debugflg = true if Input.keyPush?(K_D) # このループの中でdを押したらフラグを折り、次のループから変数表示
+  end # debug処理end
   
  #####################################################################
   
   when "gameover" # スペース入力待ち。一応ゲームオーバー画面。
-    Window.draw(0, 72, fontback, 9)
-    Window.drawFont(64, 80, "Game Over. Push Space", font, :color=>[255,255,255,255],:z=>10)
-    $state = "gamestart" if Input.keyPush?(K_SPACE)
-    gameInit
+    Window.draw(0, 72, fontback, 9) # 
+    Window.drawFont(64, 80, "Game Over. Push Space", font, :color=>[255,255,255,255],:z=>10) # 
+    $state = "gamestart" if Input.keyPush?(K_SPACE) # 
+    gameInit # 
 
  #####################################################################
   
   when "enemydown" # スペース入力待ち。一応エンディング画面。
-    Window.draw(40, 112, fontback, 9)
-    Window.draw(40, 132, fontback, 9)
-    Window.drawFont(64, 120, "Enemy down ! Congratulations !", font, :color=>[255,255,255,255],:z=>10)
-    Window.drawFont(64, 140, "Push Space", font, :color=>[255,255,255,255],:z=>10)
-    $state = "gamestart" if Input.keyPush?(K_SPACE)
-    gameInit
+    Window.draw(40, 112, fontback, 9) # 文字の背景の四角
+    Window.draw(40, 132, fontback, 9) # 文字の背景の四角
+    Window.drawFont(64, 120, "Enemy down ! Congratulations !", font, :color=>[255,255,255,255],:z=>10) # 
+    Window.drawFont(64, 140, "Push Space", font, :color=>[255,255,255,255],:z=>10) # 
+    $state = "gamestart" if Input.keyPush?(K_SPACE) # 
+    gameInit # 
 
  #####################################################################
 
   when "gamestart" # スペース入力待ち。スタート画面。
-    Window.draw(0, 92, fontback, 9)
-    Window.drawFont(64, 100, "Let' Start. Push Space", font, :color=>[255,255,255,255],:z=>10)
-    $state = "game" if Input.keyPush?(K_SPACE)
-
-  end
+    Window.draw(0, 92, fontback, 9) # 文字の背景の四角
+    Window.drawFont(64, 100, "Let' Start. Push Space", font, :color=>[255,255,255,255],:z=>10) # スタート促すメッセージ
+    $state = "game" if Input.keyPush?(K_SPACE) # スペースでゲーム開始
+  end # シーン管理end。いずれクラス化。
   
  #####################################################################
   

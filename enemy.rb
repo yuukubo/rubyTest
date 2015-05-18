@@ -107,7 +107,7 @@ class Enemy < Sprite # スプライトクラス継承
             $eshots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
           end # 3way弾、自発装填、完了
         end # 調整テストend
-      end # 自動発射完了
+      end # 調整テストend
     end # 自動発射完了
  
     self.shottimer += 1 # 一周毎に発射間隔変数をカウントアップ
@@ -124,8 +124,8 @@ class Enemy < Sprite # スプライトクラス継承
   def hit(o) # 被弾処理。ここも、実処理は書かず、タイマーのセットのみ。
     self.hit_timer = 4 # 被弾状態の時間設定。4フレームの硬直となる。
     $enemylife -= 1 # 敵ライフカウンタをカウントダウン
-    $state = "enemydown" if $enemylife == 0
-  end # 
+    $state = "enemydown" if $enemylife == 0 # エンディング分岐。以下、にしても良いのかもしれない。モジュールの耐久性的な意味で。
+  end # 被弾処理end
  
   # プレイヤーと当たった時に呼ばれるメソッド
   def shot(d) # 敵からすれば敵機撃墜のメソッド。
