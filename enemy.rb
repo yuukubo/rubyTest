@@ -34,7 +34,7 @@ class Enemy < Sprite # スプライトクラス継承
     self.alpha = 0 # フェードイン用。アルファ値は初期０
     # 敵弾関係
     @baseAngle = 90 # 開発中の為固定だが、ここを自機狙いにすれば良い
-    @wayNum = 5 # way数
+    @wayNum = rand(5) + 1 # way数
     @changeAngle = 30 # 間隔角度
     # n way用意。端の角度を計算
     @firstAngle = @baseAngle + (@wayNum - 1) / 2 * @changeAngle
@@ -96,16 +96,18 @@ class Enemy < Sprite # スプライトクラス継承
     end # 出現状況判定end
  
      # 敵ショットを実装
-    if self.shottimer % 100 <= 80 # 100週のうち、20週は休んで欲しいという意味
-      if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
-        # 敵ショットを発射      
-        @angleArr.each do |i| # 角度固定の3way弾→6wayに増量
-          spr = EShot.new(self.bx, self.by, 4, i) # v004：速度変更。これも変数にした方がメンテ性上がるね。
-           # スプライトクラス継承のshotインスタンス作成。(x, y, spd, angle)だそうです。
-           # やっぱり発射角度は自分の横軸で動く設定みたいだね。
-          $eshots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
-        end # 3way弾、自発装填、完了
-      end # 調整テストend
+    if self.alpha >= 255 # 不透明になったら
+      if self.shottimer % 100 <= 80 # 100週のうち、20週は休んで欲しいという意味
+        if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
+          # 敵ショットを発射      
+          @angleArr.each do |i| # 角度固定の3way弾→6wayに増量
+            spr = EShot.new(self.bx, self.by, 4, i) # v004：速度変更。これも変数にした方がメンテ性上がるね。
+             # スプライトクラス継承のshotインスタンス作成。(x, y, spd, angle)だそうです。
+             # やっぱり発射角度は自分の横軸で動く設定みたいだね。
+            $eshots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
+          end # 3way弾、自発装填、完了
+        end # 調整テストend
+      end # 自動発射完了
     end # 自動発射完了
  
     self.shottimer += 1 # 一周毎に発射間隔変数をカウントアップ
@@ -121,6 +123,8 @@ class Enemy < Sprite # スプライトクラス継承
   # プレイヤーの弾と当たった時に呼ばれるメソッド
   def hit(o) # 被弾処理。ここも、実処理は書かず、タイマーのセットのみ。
     self.hit_timer = 4 # 被弾状態の時間設定。4フレームの硬直となる。
+    $enemylife -= 1 # 敵ライフカウンタをカウントダウン
+    $state = "enemydown" if $enemylife == 0
   end # 
  
   # プレイヤーと当たった時に呼ばれるメソッド

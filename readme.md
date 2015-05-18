@@ -6,7 +6,13 @@ push test
 
 ***************************************
 
-v011 make scenes. 100 hitted goto gameover. bugs:not init after gameover
+v012 make ending. tune enemy appear. tune enemy shots. tune difficulty. bug fix : init after gameover
+
+2015 GW dev goes on
+
+***************************************
+
+v011 make scenes. 100 hitted goto gameover. bugs : not init after gameover
 
 v010 change enemy shots intervals
 

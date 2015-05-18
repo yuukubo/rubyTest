@@ -81,7 +81,10 @@ class Player < Sprite # スプライトクラス継承
     self.hit_timer = 4 # ここでは特に実処理はせず、ただタイマーを設定するだけ。
     $hitcount += 1 # 被弾カウンタをカウントアップ
     $lifecount -= 1 # ライフカウンタをカウントダウン
-    $state = "gameover" if $lifecount == 0
+    if $lifecount == 0
+      $state = "gameover"
+      self.vanish
+    end
   end # 被弾処理end。ここでのタイマー設定で、次の週で被弾カウンタが正なのでカウントダウンへ回る。
  
   def draw # 描画処理

@@ -24,18 +24,22 @@ Input.setRepeat(10,2)
 srand(0) # module function Kernel.#srand。毎回同じランダムデータの連続を生成することが出来る。
  # 毎回異なる数字が出るようにしたくなったら、srand 0とすればよい
  # でもこれどこで使ってるの？？
-$players = [] # 自機の配列。配列な意味があるのか不明。被弾後は配列の追加削除としてるのか？
-$shots = [] # 自機弾の配列。
-$enemys = [] # 敵の配列。
-$eshots = [] # 敵弾の配列。未実装で、今から勝手に実装する予定。
-$hitcount = 0 # 被弾カウンタ。初期値は０
-$lifecount = 100 # ライフカウンタ。初期値は１００
+def gameInit
+  $players = [] # 自機の配列。配列な意味があるのか不明。被弾後は配列の追加削除としてるのか？
+  $shots = [] # 自機弾の配列。
+  $enemys = [] # 敵の配列。
+  $eshots = [] # 敵弾の配列。未実装で、今から勝手に実装する予定。
+  $hitcount = 0 # 被弾カウンタ。初期値は０
+  $lifecount = 4 # ライフカウンタ。初期値は１００
+  $enemylife = 10 # 敵ライフカウンタ。初期値は１０
+  
+  $players.push(Player.new(300, 300)) # ループ外の初期処理、トップレベルの処理として、自機の生成。
+  2.times {|i| $enemys.push(Enemy.new(1))} # 同じくトップレベルで、敵の生成。８体だけみたい。
+  # 引数は確かスピード？そうそう、スピードのようです。→速度落としました。
+end
 
-$players.push(Player.new(300, 300)) # ループ外の初期処理、トップレベルの処理として、自機の生成。
+gameInit
 
-2.times {|i| $enemys.push(Enemy.new(1))} # 同じくトップレベルで、敵の生成。８体だけみたい。
- # 引数は確かスピード？そうそう、スピードのようです。→速度落としました。
- 
 in_pause = false # ポーズ中か判定、初期値はポーズなし。
 
 $state = "gamestart"
@@ -83,6 +87,7 @@ Window.loop do # 1/60のメインループ開始。
     Sprite.clean($shots) # 自機弾を掃除
     Sprite.clean($enemys) # 敵を掃除
     Sprite.clean($eshots) # 敵弾を掃除
+    Sprite.clean($players) # 自機を掃除
   end # 更新処理end
  
   Sprite.draw($enemys) #敵描画 
@@ -90,23 +95,35 @@ Window.loop do # 1/60のメインループ開始。
   Sprite.draw($shots) # 自機弾描画
   Sprite.draw($eshots) # 敵弾描画
  
-  # 左上にスプライト数を表示する為の処理
+  # 左上にスプライト数を表示する為の処理。そろそろ表示関係もクラスにまとめたい。
   l = $players.length + $shots.length + $enemys.length + $eshots.length # 現在の配列要素数を取得
   Window.drawFont(0, 0, "Sprs: " + ('[]' * l), font) # 画面左上端にスプライツ＋[]を配列要素数だけ表示
   Window.drawFont(0, 16, "PAUSE", font) if in_pause == 0 # ポーズ中だったら画面左端上からちょっとしたにpauseと表示
   # これうまく働いていない？
   Window.drawFont(0, 32, "hit: " + $hitcount.to_s, font) # 被弾カウンタ
   Window.drawFont(0, 48, "life: " + $lifecount.to_s, font) # ライフカウンタ
-  Window.drawFont(0, 64, "Sprs: " + l.to_s, font) # 画面左上端に配列要素数表示
+  Window.drawFont(0, 64, "enemy: " + $enemylife.to_s, font) # 敵ライフカウンタ
+  Window.drawFont(0, 80, "Sprs: " + l.to_s, font) # 画面左上端に配列要素数表示
 
   # 左上にスプライト数を表示する為の処理
   
  #####################################################################
   
   when "gameover" # スペース入力待ち。一応ゲームオーバー画面。
-    Window.draw(0, 92, fontback, 9)
+    Window.draw(0, 72, fontback, 9)
     Window.drawFont(64, 80, "Game Over. Push Space", font, :color=>[255,255,255,255],:z=>10)
     $state = "gamestart" if Input.keyPush?(K_SPACE)
+    gameInit
+
+ #####################################################################
+  
+  when "enemydown" # スペース入力待ち。一応エンディング画面。
+    Window.draw(40, 112, fontback, 9)
+    Window.draw(40, 132, fontback, 9)
+    Window.drawFont(64, 120, "Enemy down ! Congratulations !", font, :color=>[255,255,255,255],:z=>10)
+    Window.drawFont(64, 140, "Push Space", font, :color=>[255,255,255,255],:z=>10)
+    $state = "gamestart" if Input.keyPush?(K_SPACE)
+    gameInit
 
  #####################################################################
 
@@ -114,6 +131,7 @@ Window.loop do # 1/60のメインループ開始。
     Window.draw(0, 92, fontback, 9)
     Window.drawFont(64, 100, "Let' Start. Push Space", font, :color=>[255,255,255,255],:z=>10)
     $state = "game" if Input.keyPush?(K_SPACE)
+
   end
   
  #####################################################################
