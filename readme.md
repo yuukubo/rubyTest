@@ -6,6 +6,8 @@ push test
 
 ***************************************
 
+v010 change enemy shots intervals
+
 v009 change enemy shots intervals
 
 v008 change enemy shots to n way shots

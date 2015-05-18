@@ -96,14 +96,16 @@ class Enemy < Sprite # スプライトクラス継承
     end # 出現状況判定end
  
      # 敵ショットを実装
-    if self.shottimer % 20 == 0 # 20の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
-      # 敵ショットを発射      
-      @angleArr.each do |i| # 角度固定の3way弾→6wayに増量
-        spr = EShot.new(self.bx, self.by, 4, i) # v004：速度変更。これも変数にした方がメンテ性上がるね。
-         # スプライトクラス継承のshotインスタンス作成。(x, y, spd, angle)だそうです。
-         # やっぱり発射角度は自分の横軸で動く設定みたいだね。
-        $eshots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
-      end # 3way弾、自発装填、完了
+    if self.shottimer % 100 <= 80 # 100週のうち、20週は休んで欲しいという意味
+      if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
+        # 敵ショットを発射      
+        @angleArr.each do |i| # 角度固定の3way弾→6wayに増量
+          spr = EShot.new(self.bx, self.by, 4, i) # v004：速度変更。これも変数にした方がメンテ性上がるね。
+           # スプライトクラス継承のshotインスタンス作成。(x, y, spd, angle)だそうです。
+           # やっぱり発射角度は自分の横軸で動く設定みたいだね。
+          $eshots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
+        end # 3way弾、自発装填、完了
+      end # 調整テストend
     end # 自動発射完了
  
     self.shottimer += 1 # 一周毎に発射間隔変数をカウントアップ
