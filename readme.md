@@ -6,6 +6,8 @@ push test
 
 ***************************************
 
+v013 push shift key to slow down
+
 v012 make ending. tune enemy appear. tune enemy shots. tune difficulty. bug fix : init after gameover
 
 2015 GW dev goes on

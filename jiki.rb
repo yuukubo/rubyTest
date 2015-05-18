@@ -7,7 +7,7 @@ require 'dxruby' # ライブラリ読み込み
 # プレイヤーキャラ
 
 class Player < Sprite # スプライトクラス継承
-  attr_accessor :bx, :by, :shottimer, :hit_timer, :flush_image
+  attr_accessor :bx, :by, :shottimer, :hit_timer, :flush_image, :highspd, :lowspd, :spd
    # クラス内公開変数。座標、発射間隔変数、撃たれた時の停止時間変数、撃たれたイメージ
  
   # 初期化処理
@@ -21,19 +21,28 @@ class Player < Sprite # スプライトクラス継承
     self.collision = [16, 16, 4] # アタリ範囲を設定。三引数なので
      # 要素3つの配列で[x, y, r]・・・中心(x, y)から半径rのサイズの円。8ドットか、、、でかいな
     self.hit_timer = 0 #  停止時間変数。初期値は０
+    self.highspd = 6 # 自機の基本速度
+    self.lowspd = 1.5.to_f # 自機のシフト時速度
+    self.spd = 6 # 自機の現在の速度
  
     # self.offset_sync = true # DXRuby開発版でのみ使えるプロパティ
   end # 初期化end
  
   def update # 1/60秒毎の処理
     w, h = self.image.width, self.image.height # 画像の大きさ取得。多重代入
- 
+    # shift判定
+    if Input.keyPush?(K_LSHIFT)
+      self.spd = self.lowspd
+    else # shift押してなかったら
+      self.spd = self.highspd
+    end # shift判定end
+    
     # マウスカーソル座標を自機座標にする
     # →キーボード操作に変更
     # self.bx = Input.mousePosX # 自機座標はマウスカーソルとする
     # self.by = Input.mousePosY # 自機座標はマウスカーソルとする
-    self.bx += Input.x * 6 # 自機座標はキー操作とする
-    self.by += Input.y * 6 # 自機座標はキー操作とする
+    self.bx += Input.x.to_f * self.spd.to_f # 自機座標はキー操作とする
+    self.by += Input.y.to_f * self.spd.to_f # 自機座標はキー操作とする
  
     xmin, ymin = 0, 0 # 画面左上
     xmax, ymax = Window.width, Window.height # 画面右下
@@ -83,6 +92,7 @@ class Player < Sprite # スプライトクラス継承
     $lifecount -= 1 # ライフカウンタをカウントダウン
     if $lifecount == 0
       $state = "gameover"
+      $debugflg = false # spd表示したままvanish, cleanしちゃうと、表示したいものがnilになりゲームが落ちる為
       self.vanish
     end
   end # 被弾処理end。ここでのタイマー設定で、次の週で被弾カウンタが正なのでカウントダウンへ回る。
