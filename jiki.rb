@@ -42,18 +42,25 @@ class Player < Sprite # スプライトクラス継承
     self.bx = xmax if self.bx > xmax # 右判定
     self.by = ymax if self.by > ymax # 下判定
  
-    if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
+    # if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
       # 自機ショットを発射
-      [270, 30, 150].each do |i| # 角度固定の3way弾
-        spr = Shot.new(self.bx, self.by, 16, i + self.bx / 4)
+    #  [270, 30, 150].each do |i| # 角度固定の3way弾
+    #    spr = Shot.new(self.bx, self.by, 16, i + self.bx / 4)
          # スプライトクラス継承のshotインスタンス作成。(x, y, spd, angle)だそうです。
          # やっぱり発射角度は自分の横軸で動く設定みたいだね。
-        $shots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
-      end # 3way弾、自発装填、完了
-    end # 自動発射完了
+    #    $shots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
+    #  end # 3way弾、自発装填、完了
+    #end # 自動発射完了
  
+    # Zキー判定
+    if Input.key_push?(K_Z)
+      spr = Shot.new(self.bx, self.by, 16, 270)
+      $shots.push(spr)
+    end
+
     self.shottimer += 1 # 一周毎に発射間隔変数をカウントアップ
-    self.angle += 8 #  # 一周毎に自機の角度をカウントアップ。割と早め。1/60秒で8ということで、、
+    # self.angle += 8 #  # 一周毎に自機の角度をカウントアップ。割と早め。1/60秒で8ということで、、
+    # v005：回転廃止
  
     if self.hit_timer > 0 # 撃たれた判定。変数が正ならこちらへ
       self.hit_timer -= 1 # カウントダウン
@@ -69,9 +76,10 @@ class Player < Sprite # スプライトクラス継承
     self.y = self.by - h / 2 # 表示位置が気に食わないという、匠の細やかな気配りということですね
   end # 周回更新処理end
  
-  # 雑魚敵と当たった時に呼ばれる処理
+  # 雑魚敵と当たった時に呼ばれる処理。または被弾時の処理。
   def hit(o) # こっちは、攻撃された側の時の処理。
     self.hit_timer = 4 # ここでは特に実処理はせず、ただタイマーを設定するだけ。
+    $hitcount += 1 # 被弾カウンタをカウントアップ
   end # 被弾処理end。ここでのタイマー設定で、次の週で被弾カウンタが正なのでカウントダウンへ回る。
  
   def draw # 描画処理

@@ -12,7 +12,10 @@ font = Font.new(12) # スプライト数の表示用フォント
 def deg2rad(deg) # degって何かと思ったらdegrees。弧度法 度数法。ラジアン = 度 × 円周率 ÷ 180 
   return deg * Math::PI / 180.0 # まさにそのまま式にしているだけ。どうやらPythonにはMath.Radiansとかあるらしいが、Rubyにはないらしいのです。
 end # 変換メソッド自作完了
- 
+
+# キーのオートリピート設定
+Input.setRepeat(10,2)
+
 # ----------------------------------------
 
 # メイン
@@ -24,11 +27,12 @@ $players = [] # 自機の配列。配列な意味があるのか不明。被弾�
 $shots = [] # 自機弾の配列。
 $enemys = [] # 敵の配列。
 $eshots = [] # 敵弾の配列。未実装で、今から勝手に実装する予定。
+$hitcount = 0 # 被弾カウンタ。初期値は０
 
 $players.push(Player.new(300, 300)) # ループ外の初期処理、トップレベルの処理として、自機の生成。
 
-2.times {|i| $enemys.push(Enemy.new(2))} # 同じくトップレベルで、敵の生成。８体だけみたい。
- # 引数は確かスピード？そうそう、スピードのようです。
+2.times {|i| $enemys.push(Enemy.new(1))} # 同じくトップレベルで、敵の生成。８体だけみたい。
+ # 引数は確かスピード？そうそう、スピードのようです。→速度落としました。
  
 in_pause = false # ポーズ中か判定、初期値はポーズなし。
  
@@ -80,5 +84,6 @@ Window.loop do # 1/60のメインループ開始。
   l = $players.length + $shots.length + $enemys.length + $eshots.length # 現在の配列要素数を取得
   Window.drawFont(0, 0, "Sprs: " + ('[]' * l), font) # 画面左上端にスプライツ＋[]を配列要素数だけ表示
   Window.drawFont(0, 16, "PAUSE", font) if in_pause == 0 # ポーズ中だったら画面左端上からちょっとしたにpauseと表示
+  Window.drawFont(0, 32, "hit: " + $hitcount.to_s, font) # 被弾カウンタ
 end # メインループend
  
