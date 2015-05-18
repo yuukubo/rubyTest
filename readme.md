@@ -6,6 +6,8 @@ push test
 
 ***************************************
 
+v011 make scenes. 100 hitted goto gameover. bugs:not init after gameover
+
 v010 change enemy shots intervals
 
 v009 change enemy shots intervals

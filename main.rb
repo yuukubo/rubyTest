@@ -7,6 +7,7 @@ require './enemy.rb' # 敵クラス読み込み
 require './enemybullet.rb' # 敵弾クラス読み込み
  
 font = Font.new(12) # スプライト数の表示用フォント
+fontback = Image.new(192, 32, [100,100,100]) # 背景用
 
 # 度→ラジアン変換
 def deg2rad(deg) # degって何かと思ったらdegrees。弧度法 度数法。ラジアン = 度 × 円周率 ÷ 180 
@@ -28,6 +29,7 @@ $shots = [] # 自機弾の配列。
 $enemys = [] # 敵の配列。
 $eshots = [] # 敵弾の配列。未実装で、今から勝手に実装する予定。
 $hitcount = 0 # 被弾カウンタ。初期値は０
+$lifecount = 100 # ライフカウンタ。初期値は１００
 
 $players.push(Player.new(300, 300)) # ループ外の初期処理、トップレベルの処理として、自機の生成。
 
@@ -35,8 +37,16 @@ $players.push(Player.new(300, 300)) # ループ外の初期処理、トップレ
  # 引数は確かスピード？そうそう、スピードのようです。→速度落としました。
  
 in_pause = false # ポーズ中か判定、初期値はポーズなし。
+
+$state = "gamestart"
+ 
+ #####################################################################
  
 Window.loop do # 1/60のメインループ開始。
+  case $state
+  when "game" # 初期化
+  
+  
   break if Input.keyPush?(K_ESCAPE) # esc終了判定
  
   update_enable = false # 更新オンオフ。ループ始めにフラグを立てる
@@ -84,7 +94,29 @@ Window.loop do # 1/60のメインループ開始。
   l = $players.length + $shots.length + $enemys.length + $eshots.length # 現在の配列要素数を取得
   Window.drawFont(0, 0, "Sprs: " + ('[]' * l), font) # 画面左上端にスプライツ＋[]を配列要素数だけ表示
   Window.drawFont(0, 16, "PAUSE", font) if in_pause == 0 # ポーズ中だったら画面左端上からちょっとしたにpauseと表示
+  # これうまく働いていない？
   Window.drawFont(0, 32, "hit: " + $hitcount.to_s, font) # 被弾カウンタ
-  Window.drawFont(0, 48, "Sprs: " + l.to_s, font) # 画面左上端に配列要素数表示
+  Window.drawFont(0, 48, "life: " + $lifecount.to_s, font) # ライフカウンタ
+  Window.drawFont(0, 64, "Sprs: " + l.to_s, font) # 画面左上端に配列要素数表示
+
+  # 左上にスプライト数を表示する為の処理
+  
+ #####################################################################
+  
+  when "gameover" # スペース入力待ち。一応ゲームオーバー画面。
+    Window.draw(0, 92, fontback, 9)
+    Window.drawFont(64, 80, "Game Over. Push Space", font, :color=>[255,255,255,255],:z=>10)
+    $state = "gamestart" if Input.keyPush?(K_SPACE)
+
+ #####################################################################
+
+  when "gamestart" # スペース入力待ち。スタート画面。
+    Window.draw(0, 92, fontback, 9)
+    Window.drawFont(64, 100, "Let' Start. Push Space", font, :color=>[255,255,255,255],:z=>10)
+    $state = "game" if Input.keyPush?(K_SPACE)
+  end
+  
+ #####################################################################
+  
 end # メインループend
  
