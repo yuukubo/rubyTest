@@ -4,6 +4,8 @@ after study how to use git
 
 push test
 
+ ** 20150518 study git over. push test start **
+
 ***************************************
 
 v014 GBM and GB added. exe by ocra
@@ -38,4 +40,4 @@ v002 make classes
 
 v001 main.rb only
 
- ** 20150518 study git over. push test start **
+ ** 20150415 start study Ruby! **
