@@ -14,8 +14,8 @@ class Shot < Sprite # スプライトクラス継承
     self.bx = x # 横軸の位置を変数にセット
     self.by = y # 縦軸の位置を変数にセット
     self.image = Image.load("jiki_bullet.png") # イメージ読み込み
-    self.dx = spd * Math.cos(deg2rad(angle)) # 横軸回転
-    self.dy = spd * Math.sin(deg2rad(angle)) # 縦軸回転
+    self.dx = spd * Math.cos(deg2rad(angle)) # 横軸回転。じゃない。斜め移動量
+    self.dy = spd * Math.sin(deg2rad(angle)) # 縦軸回転。じゃない。斜め移動量
     self.angle = angle # 角度
     self.collision = [0, 13, 31, 18] # 当たり判定（矩形）
     self.collision_enable = true # 当たり判定オンオフ。初期値オン。

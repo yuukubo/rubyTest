@@ -29,8 +29,11 @@ class Player < Sprite # スプライトクラス継承
     w, h = self.image.width, self.image.height # 画像の大きさ取得。多重代入
  
     # マウスカーソル座標を自機座標にする
-    self.bx = Input.mousePosX # 自機座標はマウスカーソルとする
-    self.by = Input.mousePosY # 自機座標はマウスカーソルとする
+    # →キーボード操作に変更
+    # self.bx = Input.mousePosX # 自機座標はマウスカーソルとする
+    # self.by = Input.mousePosY # 自機座標はマウスカーソルとする
+    self.bx += Input.x * 6 # 自機座標はキー操作とする
+    self.by += Input.y * 6 # 自機座標はキー操作とする
  
     xmin, ymin = 0, 0 # 画面左上
     xmax, ymax = Window.width, Window.height # 画面右下
