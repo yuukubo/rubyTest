@@ -17,7 +17,7 @@ class Enemy < Sprite # スプライトクラス継承
  
     # DXRuby開発版でのみ利用可能。フラッシュ画像を作れる
     # self.flush_image = self.org_image.flush(C_WHITE)
-  # これは便利ですねえ。。まあ画像くらい用意しろって話かもだけど。
+    # これは便利ですねえ。。まあ画像くらい用意しろって話かもだけど。
     self.spd = spd # 引数の速度を受け取り。
     self.collision = [0, 0, 31, 31] # 敵の当たり判定。矩形。ってか超でかいね。
     self.init # initメソッド実行。中身は下記の通り。
@@ -26,12 +26,21 @@ class Enemy < Sprite # スプライトクラス継承
   # 発生時の初期化処理
   def init # 初期化を別途記載していますね。。。何故分けたし
     self.bx = rand(Window.width) # 画面のどこかをランダム取得して座標に設定
-    self.by = rand(Window.height) #画面のどこかをランダム取得して座標に設定 
+    self.by = rand(Window.height / 2) #画面のどこかをランダム取得して座標に設定→上半分に変更
     self.collision_enable = false # 衝突判定は、初期はオフ。フェードインですね。
     self.collision_sync = false # 衝突判定の角度同期等も初期はオフ。
     self.shottimer = 0 # 自動発射敵弾の間隔変数。初期値は０
     self.hit_timer = 0 # 被弾カウントは初期０
     self.alpha = 0 # フェードイン用。アルファ値は初期０
+    # 敵弾関係
+    @baseAngle = 90 # 開発中の為固定だが、ここを自機狙いにすれば良い
+    @wayNum = 5 # way数
+    @changeAngle = 30 # 間隔角度
+    # n way用意。端の角度を計算
+    @firstAngle = @baseAngle + (@wayNum - 1) / 2 * @changeAngle
+    @angleArr = [] # 角度配列用意
+    # 角度配列＝５way分、端の角度に間隔角度を累積させていく。
+    @wayNum.times {|i| @angleArr.push(@firstAngle - @changeAngle * i)}
   end # 別記載の初期化処理end
  
   # 更新処理
@@ -88,9 +97,9 @@ class Enemy < Sprite # スプライトクラス継承
  
      # 敵ショットを実装
     if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
-      # 敵ショットを発射
-      [270, 300, 30, 60, 150, 180].each do |i| # 角度固定の3way弾→6wayに増量
-        spr = EShot.new(self.bx, self.by, 4, i + self.bx / 2) # v004：速度変更。これも変数にした方がメンテ性上がるね。
+      # 敵ショットを発射      
+      @angleArr.each do |i| # 角度固定の3way弾→6wayに増量
+        spr = EShot.new(self.bx, self.by, 4, i) # v004：速度変更。これも変数にした方がメンテ性上がるね。
          # スプライトクラス継承のshotインスタンス作成。(x, y, spd, angle)だそうです。
          # やっぱり発射角度は自分の横軸で動く設定みたいだね。
         $eshots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。

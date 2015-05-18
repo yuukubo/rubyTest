@@ -8,6 +8,8 @@ push test
 20150518 study git over. push test
 
 
+v008 change enemy shots to "n way shots"
+
 v007 change enemy shots. jiki shot when push Z key. stop rotation. make hit counter
 
 v006 reduce enemy

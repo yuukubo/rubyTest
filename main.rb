@@ -85,5 +85,6 @@ Window.loop do # 1/60のメインループ開始。
   Window.drawFont(0, 0, "Sprs: " + ('[]' * l), font) # 画面左上端にスプライツ＋[]を配列要素数だけ表示
   Window.drawFont(0, 16, "PAUSE", font) if in_pause == 0 # ポーズ中だったら画面左端上からちょっとしたにpauseと表示
   Window.drawFont(0, 32, "hit: " + $hitcount.to_s, font) # 被弾カウンタ
+  Window.drawFont(0, 48, "Sprs: " + l.to_s, font) # 画面左上端に配列要素数表示
 end # メインループend
  
