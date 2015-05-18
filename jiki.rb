@@ -13,8 +13,8 @@ class Player < Sprite
     super
     self.bx = x
     self.by = y
-    self.image = $imgs[1]
-    self.flush_image = $imgs[7]
+    self.image = Image.load("jiki.png")
+    self.flush_image = Image.load("jiki_flush.png")
     self.shottimer = 0
     self.collision = [16, 16, 4] # アタリ範囲を設定
     self.hit_timer = 0
@@ -69,7 +69,8 @@ class Player < Sprite
   def draw
     super
     if self.hit_timer > 0
-      Window.drawScale(self.x, self.y, self.flush_image, 3, 3)
+#      Window.drawScale(self.x, self.y, self.flush_image, 3, 3)
+      Window.draw(self.x, self.y, self.flush_image)
     end
   end
 end

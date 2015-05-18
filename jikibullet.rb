@@ -11,7 +11,7 @@ class Shot < Sprite
   def initialize(x, y, spd, angle)
     self.bx = x
     self.by = y
-    self.image = $imgs[0]
+    self.image = Image.load("jiki_bullet.png")
     self.dx = spd * Math.cos(deg2rad(angle))
     self.dy = spd * Math.sin(deg2rad(angle))
     self.angle = angle

@@ -6,13 +6,13 @@ require 'dxruby'
 # ----------------------------------------
 # 雑魚敵
 class Enemy < Sprite
-  attr_accessor :bx, :by, :dir, :dx, :dy
+  attr_accessor :bx, :by, :dir, :dx, :dy, :shottimer 
   attr_accessor :hit_timer, :spd, :org_image, :flush_image
  
   def initialize(spd)
-    self.org_image = $imgs[2]
+    self.org_image = Image.load("enemy.png")
     self.image = self.org_image
-    self.flush_image =  $imgs[3]
+    self.flush_image = Image.load("enemy_flush.png")
  
     # DXRuby開発版でのみ利用可能。フラッシュ画像を作れる
     # self.flush_image = self.org_image.flush(C_WHITE)
@@ -28,6 +28,7 @@ class Enemy < Sprite
     self.by = rand(Window.height)
     self.collision_enable = false
     self.collision_sync = false
+    self.shottimer = 0 # 自動発射敵弾の間隔変数。初期値は０
     self.hit_timer = 0
     self.alpha = 0
   end
@@ -78,7 +79,20 @@ class Enemy < Sprite
         end
       end
     end
+
+     # 敵ショットを実装
+    if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
+      # 敵ショットを発射
+      [270, 30, 150].each do |i| # 角度固定の3way弾
+        spr = EShot.new(self.bx, self.by, 16, i + self.bx / 2)
+         # スプライトクラス継承のshotインスタンス作成。(x, y, spd, angle)だそうです。
+         # やっぱり発射角度は自分の横軸で動く設定みたいだね。
+        $eshots.push(spr) # グローバル変数というか自機弾の配列について、作成したインスタンスを最後尾に追加。
+      end # 3way弾、自発装填、完了
+    end # 自動発射完了
  
+    self.shottimer += 1 # 一周毎に発射間隔変数をカウントアップ
+    
     self.image = (self.hit_timer <= 0)? self.org_image : self.flush_image
  
     self.x = self.bx - w / 2
