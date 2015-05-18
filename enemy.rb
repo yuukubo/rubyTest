@@ -96,7 +96,7 @@ class Enemy < Sprite # スプライトクラス継承
     end # 出現状況判定end
  
      # 敵ショットを実装
-    if self.shottimer % 10 == 0 # 10の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
+    if self.shottimer % 20 == 0 # 20の倍数毎に発射ということらしい。詰まり、3wayを秒間6発？
       # 敵ショットを発射      
       @angleArr.each do |i| # 角度固定の3way弾→6wayに増量
         spr = EShot.new(self.bx, self.by, 4, i) # v004：速度変更。これも変数にした方がメンテ性上がるね。
