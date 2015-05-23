@@ -55,7 +55,8 @@ $state = "gamestart" # 先ずゲームスタートシーンへご案内。
 #def bgmmgr
 #  bgm1.start = 5000 # BGM開始
 #  bgm1.setVolume 255
-  bgm1.play
+bgm1.start = 2000
+bgm1.play
 #end
 
  #####################################################################
